@@ -1,106 +1,131 @@
-import java.awt.Color;
-import java.awt.Font;
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+public class InventoryWindow {
 
-    public class InventoryWindow {
+    public InventoryWindow() {
+        JFrame frame = new JFrame("Inventory Management System");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 500);
+        frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
 
-        public InventoryWindow()
-        {
-            // Create the frame
-            JFrame frame = new JFrame();
-            frame.setTitle("Inventory Management System");
-            frame.setSize(600, 500);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setLayout(null);
-            frame.setResizable(false);
-            frame.setLocationRelativeTo(null); // Center on screen
+        // Use GridBagLayout for flexible placement
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20)); // padding around edges
+        frame.setContentPane(panel);
 
-            // Title label
-            JLabel titleLabel = new JLabel("Welcome to Inventory System");
-            titleLabel.setBounds(150, 20, 300, 30);
-            titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            titleLabel.setForeground(Color.BLUE);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // spacing around components
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-            // Graphics Panel
-//        JPanel graphicsPanel = new JPanel() {
-//            @Override
-//            protected void paintComponent(Graphics g) {
-//                super.paintComponent(g);
-//                g.setColor(new Color(100, 200, 255));
-//                g.fillOval(10, 10, 50, 50);
-//                g.setColor(Color.BLACK);
-//                g.drawString("Inventory Icon", 10, 75);
-//            }
-//        };
-//        graphicsPanel.setBounds(400, 20, 100, 100);
-//        graphicsPanel.setBackground(Color.WHITE);
+        // Title
+        JLabel titleLabel = new JLabel("Welcome to Inventory System", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(new Color(30, 144, 255)); // Dodger Blue
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 3;
+        panel.add(titleLabel, gbc);
 
-            // Item Name label and text field
-            JLabel nameLabel = new JLabel("Item Name:");
-            nameLabel.setBounds(50, 100, 100, 25);
-            JTextField nameField = new JTextField();
-            nameField.setBounds(150, 100, 200, 25);
+        // Reset gridwidth for other components
+        gbc.gridwidth = 1;
 
-            // Category label and combo box
-            JLabel categoryLabel = new JLabel("Category:");
-            categoryLabel.setBounds(50, 140, 100, 25);
-            String[] categories = {"Electronics", "Clothing", "Food", "Stationery", "Mussa"};
-            JComboBox<String> categoryBox = new JComboBox<>(categories);
-            categoryBox.setBounds(150, 140, 200, 25);
+        // Item Name Label + TextField
+        gbc.gridy = 1;
+        gbc.gridx = 0;
+        panel.add(new JLabel("Item Name:"), gbc);
 
-            // Availability checkbox
-            JCheckBox availableCheck = new JCheckBox("Available");
-            availableCheck.setBounds(150, 180, 100, 25);
+        JTextField nameField = new JTextField(20);
+        nameField.setToolTipText("Enter the item name");
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        panel.add(nameField, gbc);
+        gbc.gridwidth = 1;
 
-            // Add Item button
-            JButton addButton = new JButton("Add Item");
-            addButton.setBounds(150, 220, 100, 30);
+        // Category Label + ComboBox
+        gbc.gridy = 2;
+        gbc.gridx = 0;
+        panel.add(new JLabel("Category:"), gbc);
 
-            // Output TextArea
-            JTextArea outputArea = new JTextArea();
-            outputArea.setBounds(50, 270, 480, 160);
-            outputArea.setEditable(false);
-            outputArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        String[] categories = {"Electronics", "Clothing", "Food", "Stationery", "Mussa"};
+        JComboBox<String> categoryBox = new JComboBox<>(categories);
+        categoryBox.setToolTipText("Select the category of the item");
+        gbc.gridx = 1;
+        gbc.gridwidth = 2;
+        panel.add(categoryBox, gbc);
+        gbc.gridwidth = 1;
 
-            // Add components to frame
-            frame.add(titleLabel);
-//        frame.add(graphicsPanel);
-            frame.add(nameLabel);
-            frame.add(nameField);
-            frame.add(categoryLabel);
-            frame.add(categoryBox);
-            frame.add(availableCheck);
-            frame.add(addButton);
-            frame.add(outputArea);
+        // Availability Checkbox
+        JCheckBox availableCheck = new JCheckBox("Available");
+        availableCheck.setToolTipText("Check if item is in stock");
+        gbc.gridy = 3;
+        gbc.gridx = 1;
+        panel.add(availableCheck, gbc);
 
-            // Add Item Button Action
-            addButton.addActionListener(e -> {
-                String name = nameField.getText().trim();
-                String category = (String) categoryBox.getSelectedItem();
-                boolean isAvailable = availableCheck.isSelected();
+        // Buttons: Add Item & Clear
+        JButton addButton = new JButton("Add Item");
+        addButton.setBackground(new Color(60, 179, 113)); // Medium Sea Green
+        addButton.setForeground(Color.WHITE);
+        addButton.setFocusPainted(false);
 
-                if (!name.isEmpty()) {
-                    outputArea.append("Added: " + name + " (" + category + ") - "
-                            + (isAvailable ? "In Stock" : "Out of Stock") + "\n");
-                    nameField.setText("");
-                    availableCheck.setSelected(false);
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Please enter item name.", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            });
+        JButton clearButton = new JButton("Clear");
+        clearButton.setBackground(new Color(220, 20, 60)); // Crimson
+        clearButton.setForeground(Color.WHITE);
+        clearButton.setFocusPainted(false);
 
-            // Show the frame
-            frame.setVisible(true);
-        }
+        gbc.gridy = 4;
+        gbc.gridx = 1;
+        panel.add(addButton, gbc);
+        gbc.gridx = 2;
+        panel.add(clearButton, gbc);
 
+        // Output Area inside ScrollPane
+        JTextArea outputArea = new JTextArea(10, 40);
+        outputArea.setEditable(false);
+        outputArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        outputArea.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+        JScrollPane scrollPane = new JScrollPane(outputArea);
+        gbc.gridy = 5;
+        gbc.gridx = 0;
+        gbc.gridwidth = 3;
+        gbc.fill = GridBagConstraints.BOTH;
+        panel.add(scrollPane, gbc);
+
+        // Action listeners
+        addButton.addActionListener(e -> {
+            String name = nameField.getText().trim();
+            if (name.isEmpty()) {
+                JOptionPane.showMessageDialog(frame, "Please enter item name.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                nameField.requestFocus();
+                return;
+            }
+
+            String category = (String) categoryBox.getSelectedItem();
+            boolean isAvailable = availableCheck.isSelected();
+
+            outputArea.append(String.format("Added: %-20s | Category: %-12s | Status: %s%n",
+                    name, category, isAvailable ? "In Stock" : "Out of Stock"));
+
+            // Clear inputs after adding
+            nameField.setText("");
+            availableCheck.setSelected(false);
+            nameField.requestFocus();
+        });
+
+        clearButton.addActionListener(e -> {
+            nameField.setText("");
+            availableCheck.setSelected(false);
+            outputArea.setText("");
+            nameField.requestFocus();
+        });
+
+        frame.setVisible(true);
     }
 
+    // Main to run just this window if you want quick test
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(InventoryWindow::new);
+    }
+}
